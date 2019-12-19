@@ -4,34 +4,25 @@ const chalk = require('chalk')
 const config = require('./config/defaultConfig')
 const route = require('./helper/route')
 
+class Server {
 
-const server = http.createServer((req, res) => {
-	const filepath = path.join(config.root, req.url)
-	route(req, res, filepath)
-	// fs.stat(filepath, (error, stats) => {
-	// 	if (error) {
-	// 		res.statusCode = 404
-	// 		res.setHeader('Content-Type', 'text/plain')
-	// 		res.end(`${filepath} is not a directory or a file`)
-	// 		return
-	// 	}
-	// 	if (stats.isFile()) {
-	// 		res.writeHead(200, {
-	// 			'Content-Type': 'text/plain'
-	// 		})
-	// 		fs.createReadStream(filepath).pipe(res)
-	// 	} else if (stats.isDirectory()) {
-	// 		 fs.readdir(filepath, (err, files) => {
-	// 			res.statusCode = 200
-	// 			res.setHeader('Content-Type', 'text/plain')
-	// 			res.end(files.join(','))
-	// 		 })
-	// 	}
-  	// })
-})
+	constructor (configS) {
+		// 两个配置项合并
+		this.config = Object.assign({}, config, configS)
+	}
 
-server.listen(config.port, config.hostname, () => {
-	const addr = `http://${config.hostname}:${config.port}`
-	console.info(`Server started at ${chalk.green(addr)}`);
+	start () {
+		const server = http.createServer((req, res) => {
+			const filepath = path.join(this.config.root, req.url)
+			route(req, res, filepath, this.config)
+		})
 
-})
+		server.listen(this.config.port, this.config.hostname, () => {
+			const addr = `http://${this.config.hostname}:${this.config.port}`
+			console.info(`Server started at ${chalk.green(addr)}`);
+
+		})
+	}
+}
+
+module.exports = Server
