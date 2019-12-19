@@ -1,6 +1,6 @@
 {
   "name": "anydoor",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "Tiny Node.js static web server(类似于anyWhere, 山寨版)",
   "main": "app.js",
   "bin": {
